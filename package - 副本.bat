@@ -1,38 +1,18 @@
-@echo off
-echo.
-echo [信息] 打包微服务，生成所有 JAR 包文件。
-echo.
+#!/bin/bash
 
-REM 调用 Maven 构建
-call mvn clean package -Dmaven.test.skip=true
+# 定义备份文件的路径和名称
+BACKUP_DIR="/opt/project/flowlz/dingxi/backage"
+BACKUP_FILE="${BACKUP_DIR}/dx_$(date +%Y%m%d_%H%M%S).dump"
 
-REM 切换到脚本所在目录
-cd /d %~dp0
+# 创建备份目录（如果不存在的话）
+mkdir -p $BACKUP_DIR
 
-REM 定义目标目录
-set "TARGET_DIR=%cd%\package"
+# 执行备份命令
+/opt/Kingbase/ES/V8/KESRealPro/V008R006C007B0024/ClientTools/bin/sys_dump -U FLOWLZDX -p 54321 -d FLOWLZDX -Fc > $BACKUP_FILE
 
-REM 创建目标目录（如果不存在的话）
-if not exist "%TARGET_DIR%" mkdir "%TARGET_DIR%"
 
-REM 打印当前目录
-echo 当前目录: %cd%
+0 23 * * * /opt/project/flowlz/dingxi/backage/dxbackup.sh
 
-REM 遍历所有目录并查找 JAR 文件
-for /r %%d in (target) do (
-    if exist "%%d\*.jar" (
-        echo 查找目录: %%d
-        for %%f in ("%%d\*.jar") do (
-            REM 排除包含 yumi-common 的 JAR 文件
-            echo %%f | findstr /i "yumi-common" >nul
-            if errorlevel 1 (
-                echo Moving %%f
-                move "%%f" "%TARGET_DIR%"
-            ) else (
-                echo Skipping %%f
-            )
-        )
-    )
-)
+30 23 * * * /opt/project/flowlz/dingxipark/backage/backup.sh
 
-pause
+/opt/Kingbase/ES/V8/KESRealPro/V008R006C007B0024/ClientTools/bin/sys_restore -U FLOWLZDX -p 54321 -d test -v /opt/project/flowlz/dingxi/backage/dx_20240830_153036.dump
