@@ -1,0 +1,2 @@
+com.yumi.common.log.service.AsyncLogService
+com.yumi.common.log.aspect.LogAspect

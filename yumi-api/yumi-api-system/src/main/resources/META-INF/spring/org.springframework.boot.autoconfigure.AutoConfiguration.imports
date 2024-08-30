@@ -1,0 +1,3 @@
+com.yumi.system.api.factory.RemoteUserFallbackFactory
+com.yumi.system.api.factory.RemoteLogFallbackFactory
+com.yumi.system.api.factory.RemoteFileFallbackFactory
